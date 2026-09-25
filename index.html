@@ -1,0 +1,1019 @@
+<!DOCTYPE html>
+<html lang="so">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sahal Primary & Secondary School</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --orange: #f39c12;
+            --orange-dark: #e67e22;
+            --blue-dark: #1a2a4a;
+            --blue-darker: #0f1b33;
+            --blue-mid: #2c3e50;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f1b33 0%, #1a2a4a 100%);
+            color: #333;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes slideInLeft {
+            from { opacity: 0; transform: translateX(-40px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        @keyframes slideInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes bounceIn {
+            0%   { opacity: 0; transform: scale(0.8); }
+            60%  { opacity: 1; transform: scale(1.05); }
+            100% { opacity: 1; transform: scale(1); }
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { box-shadow: 0 0 0 0 rgba(243, 156, 18, 0.5); }
+            50%      { box-shadow: 0 0 0 12px rgba(243, 156, 18, 0); }
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes gradientShift {
+            0%   { background-position: 0% 50%; }
+            50%  { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        @keyframes logoFloat {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50%      { transform: translateY(-6px) rotate(2deg); }
+        }
+
+        @keyframes logoGlow {
+            0%, 100% { filter: drop-shadow(0 0 6px rgba(243, 156, 18, 0.5)); }
+            50%      { filter: drop-shadow(0 0 16px rgba(243, 156, 18, 0.9)); }
+        }
+
+        /* Header Styles */
+        header {
+            background: linear-gradient(90deg, var(--blue-darker), var(--blue-dark), var(--blue-mid));
+            background-size: 200% 200%;
+            animation: gradientShift 10s ease infinite;
+            color: white;
+            padding: 20px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            border-bottom: 3px solid var(--orange);
+        }
+
+        .header-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 22px;
+            animation: fadeIn 0.8s ease;
+        }
+
+        /* ===== LOGO STYLES ===== */
+        .school-logo {
+            width: 90px;
+            height: 90px;
+            object-fit: contain;
+            background-color: #ffffff;
+            border-radius: 50%;
+            padding: 8px;
+            border: 3px solid var(--orange);
+            box-shadow: 0 0 25px rgba(243, 156, 18, 0.6);
+            animation: logoFloat 3s ease-in-out infinite, logoGlow 2.5s ease-in-out infinite;
+            transition: transform 0.4s ease;
+            flex-shrink: 0;
+        }
+
+        .school-logo:hover {
+            transform: scale(1.1) rotate(-5deg);
+        }
+
+        .logo-text {
+            text-align: left;
+        }
+
+        .logo h1 {
+            font-size: 24px;
+            font-weight: 600;
+            background: linear-gradient(90deg, #ffffff, var(--orange));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .logo p {
+            font-size: 14px;
+            color: #cfd8e3;
+            opacity: 0.9;
+        }
+
+        /* Login Form Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh;
+        }
+
+        .login-form {
+            background: linear-gradient(160deg, #ffffff, #f0f4f8);
+            padding: 35px 30px;
+            border-radius: 14px;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.5);
+            width: 100%;
+            max-width: 400px;
+            border-top: 5px solid var(--orange);
+            animation: bounceIn 0.9s ease;
+        }
+
+        .login-form.shake {
+            animation: shake 0.4s ease;
+        }
+
+        .login-form h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: var(--blue-dark);
+            font-size: 26px;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            animation: slideInUp 0.6s ease backwards;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+            color: var(--blue-mid);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #d5dde5;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background-color: #fff;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--orange);
+            box-shadow: 0 0 0 4px rgba(243, 156, 18, 0.2);
+            transform: scale(1.02);
+        }
+
+        .error-message {
+            color: #e74c3c;
+            font-size: 14px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+            display: none;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .error-message.show {
+            display: block;
+            animation: shake 0.4s ease;
+        }
+
+        .btn {
+            background: linear-gradient(90deg, var(--orange), var(--orange-dark));
+            background-size: 200% 200%;
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            width: 100%;
+            letter-spacing: 1px;
+            transition: all 0.3s ease;
+            animation: pulseGlow 2s infinite;
+        }
+
+        .btn:hover {
+            background-position: 100% 50%;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.5);
+        }
+
+        .btn:active { transform: translateY(0); }
+
+        /* Navigation Styles */
+        nav {
+            background: linear-gradient(90deg, var(--blue-darker), var(--blue-dark));
+            display: none;
+            border-bottom: 2px solid var(--orange);
+        }
+
+        nav.show { display: block; animation: slideInUp 0.5s ease; }
+
+        .nav-container { display: flex; }
+
+        .nav-item {
+            padding: 16px 24px;
+            color: #cfd8e3;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            position: relative;
+        }
+
+        .nav-item::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 3px;
+            background: var(--orange);
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-item:hover {
+            background-color: rgba(255,255,255,0.05);
+            color: white;
+        }
+
+        .nav-item:hover::after { width: 80%; }
+
+        .nav-item.active {
+            background: linear-gradient(180deg, transparent, rgba(243, 156, 18, 0.2));
+            color: var(--orange);
+        }
+
+        .nav-item.active::after { width: 100%; }
+
+        /* Content Sections */
+        .content-section {
+            display: none;
+            padding: 30px 0;
+            min-height: 500px;
+        }
+
+        .content-section.show { display: block; animation: fadeIn 0.6s ease; }
+
+        .section-title {
+            margin-bottom: 20px;
+            color: var(--orange);
+            border-bottom: 2px solid var(--orange);
+            padding-bottom: 10px;
+            animation: slideInLeft 0.6s ease;
+        }
+
+        /* Student Info */
+        .student-info {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.15);
+            border-left: 5px solid var(--orange);
+            animation: slideInLeft 0.7s ease;
+        }
+
+        .student-details { display: flex; gap: 30px; flex-wrap: wrap; }
+        .student-detail { display: flex; flex-direction: column; }
+        .student-detail label { font-weight: 600; margin-bottom: 5px; color: var(--blue-mid); }
+        .student-detail span { color: var(--blue-dark); font-weight: 500; }
+
+        /* Month Selection */
+        .month-selection { margin-bottom: 20px; animation: fadeIn 0.8s ease; }
+        .month-selection h3 { color: white; margin-bottom: 12px; }
+        .month-buttons { display: flex; gap: 10px; flex-wrap: wrap; }
+
+        .month-btn {
+            padding: 10px 18px;
+            background-color: #e8eef5;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--blue-dark);
+            transition: all 0.3s ease;
+        }
+
+        .month-btn:hover {
+            background-color: #fff;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.3);
+        }
+
+        .month-btn.active {
+            background: linear-gradient(90deg, var(--orange), var(--orange-dark));
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(243, 156, 18, 0.5);
+        }
+
+        /* Tables */
+        .results-table, .behavior-table, .attendance-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+            background-color: white;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            animation: slideInUp 0.7s ease;
+        }
+
+        .results-table th, .results-table td,
+        .behavior-table th, .behavior-table td,
+        .attendance-table th, .attendance-table td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #eee;
+        }
+
+        .results-table th, .behavior-table th, .attendance-table th {
+            background: linear-gradient(90deg, var(--blue-dark), var(--blue-mid));
+            color: white;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .results-table tbody tr,
+        .behavior-table tbody tr,
+        .attendance-table tbody tr { transition: all 0.25s ease; }
+
+        .results-table tbody tr:hover,
+        .behavior-table tbody tr:hover,
+        .attendance-table tbody tr:hover {
+            background-color: #fff5e1;
+            transform: scale(1.01);
+        }
+
+        .results-table tbody tr:nth-child(even),
+        .behavior-table tbody tr:nth-child(even),
+        .attendance-table tbody tr:nth-child(even) { background-color: #f8fafc; }
+
+        /* Summary Boxes */
+        .results-summary, .behavior-summary {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .summary-box, .behavior-count {
+            background: linear-gradient(160deg, #ffffff, #eef4fb);
+            padding: 18px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+            flex: 1;
+            min-width: 200px;
+            border-top: 4px solid var(--orange);
+            transition: all 0.3s ease;
+            animation: bounceIn 0.8s ease backwards;
+        }
+
+        .summary-box:hover, .behavior-count:hover {
+            transform: translateY(-5px) scale(1.03);
+            box-shadow: 0 10px 30px rgba(243, 156, 18, 0.4);
+        }
+
+        .summary-box h3, .behavior-count h3 {
+            margin-bottom: 10px;
+            color: var(--blue-mid);
+            font-size: 15px;
+        }
+
+        .summary-value { font-size: 26px; font-weight: 700; color: var(--orange-dark); }
+        .count-value { font-size: 26px; font-weight: 700; }
+        .good-count { color: #27ae60; }
+        .bad-count { color: #e74c3c; }
+
+        /* PDF Button */
+        .pdf-btn {
+            background: linear-gradient(90deg, var(--blue-dark), var(--blue-mid));
+            color: white;
+            border: 2px solid var(--orange);
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .pdf-btn:hover {
+            background: linear-gradient(90deg, var(--orange), var(--orange-dark));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(243, 156, 18, 0.5);
+        }
+
+        /* Loading Indicator */
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 12px;
+            color: var(--orange);
+            font-weight: 600;
+        }
+
+        .loading.show { display: block; }
+
+        .loading::before {
+            content: '';
+            display: inline-block;
+            width: 18px;
+            height: 18px;
+            margin-right: 10px;
+            border: 3px solid rgba(243, 156, 18, 0.3);
+            border-top-color: var(--orange);
+            border-radius: 50%;
+            vertical-align: middle;
+            animation: spin 0.8s linear infinite;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                text-align: center;
+                gap: 12px;
+            }
+
+            .logo-text { text-align: center; }
+            .school-logo { width: 75px; height: 75px; }
+
+            .nav-container { flex-direction: column; }
+            .student-details { flex-direction: column; gap: 15px; }
+            .month-buttons { justify-content: center; }
+            .results-summary, .behavior-summary { flex-direction: column; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ================= HEADER ================= -->
+    <header>
+        <div class="container">
+            <div class="header-content">
+
+                <!-- ⬇️⬇️⬇️ LOGO HALKAN — BEDDEL QIIMAHA src ⬇️⬇️⬇️ -->
+                <img src="sahal.jpeg" 
+                     alt="Sahal School Logo" 
+                     class="school-logo" 
+                     id="schoolLogo"
+                     onerror="this.onerror=null; this.src='data:image/svg+xml;utf8,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%23f39c12%22/><text x=%2250%22 y=%2265%22 font-size=%2245%22 text-anchor=%22middle%22 fill=%22white%22 font-family=%22Arial%22 font-weight=%22bold%22>S</text></svg>'">
+                <!-- ⬆️⬆️⬆️ LOGO HALKAN — BEDDEL QIIMAHA src ⬆️⬆️⬆️ -->
+
+                <div class="logo">
+                    <div class="logo-text">
+                        <h1>Sahal Primary & Secondary School</h1>
+                        <p>Student Results, Behavior and Attendance Portal</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </header>
+
+    <!-- ================= LOGIN ================= -->
+    <div class="login-container" id="loginSection">
+        <div class="login-form" id="loginForm">
+            <h2>Login</h2>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" placeholder="Geli password-ka">
+            </div>
+            <div class="error-message" id="errorMessage">
+                Password-ka aad gelisay waa khalad. Fadlan isku day mar kale.
+            </div>
+            <button class="btn" id="loginBtn">Login</button>
+        </div>
+    </div>
+
+    <!-- ================= NAVIGATION ================= -->
+    <nav id="navigation">
+        <div class="container">
+            <div class="nav-container">
+                <div class="nav-item active" data-section="results">Natiijo</div>
+                <div class="nav-item" data-section="behavior">Aqlaaqda</div>
+                <div class="nav-item" data-section="attendance">Maqnaasho</div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ================= MAIN ================= -->
+    <main class="container">
+
+        <!-- RESULTS -->
+        <section class="content-section" id="resultsSection">
+            <h2 class="section-title">Natiijada Ardayga</h2>
+
+            <div class="student-info">
+                <div class="student-details">
+                    <div class="student-detail">
+                        <label>Magaca Ardayga:</label>
+                        <span id="studentName">Mushtaq keyse Mohamed</span>
+                    </div>
+                    <div class="student-detail">
+                        <label>Fasalka:</label>
+                        <span id="studentGrade">Grade 7</span>
+                    </div>
+                    <div class="student-detail">
+                        <label>ID No:</label>
+                        <span id="studentId">SAH 4714</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="month-selection">
+                <h3>Dooro Bisha:</h3>
+                <div class="month-buttons">
+                    <button class="month-btn active" data-month="1">Bisha 1aad</button>
+                    <button class="month-btn" data-month="2">Bisha 2aad</button>
+                    <button class="month-btn" data-month="3">Bisha 3aad</button>
+                    <button class="month-btn" data-month="4">Bisha 4aad</button>
+                </div>
+            </div>
+
+            <table class="results-table">
+                <thead>
+                    <tr>
+                        <th>Maadooyinka</th>
+                        <th>Darajo</th>
+                    </tr>
+                </thead>
+                <tbody id="resultsBody"></tbody>
+            </table>
+
+            <div class="results-summary">
+                <div class="summary-box">
+                    <h3>Total</h3>
+                    <div class="summary-value" id="totalScore">0</div>
+                </div>
+                <div class="summary-box">
+                    <h3>Average</h3>
+                    <div class="summary-value" id="averageScore">0</div>
+                </div>
+                <div class="summary-box">
+                    <h3>GPA</h3>
+                    <div class="summary-value" id="gpaScore">0</div>
+                </div>
+            </div>
+
+            <div class="loading" id="resultsLoading">Downloading PDF...</div>
+            <button class="pdf-btn" id="resultsPdfBtn">⬇ Download PDF</button>
+        </section>
+
+        <!-- BEHAVIOR -->
+        <section class="content-section" id="behaviorSection">
+            <h2 class="section-title">Aqlaaqda Ardayga</h2>
+
+            <div class="student-info">
+                <div class="student-details">
+                    <div class="student-detail">
+                        <label>Magaca Ardayga:</label>
+                        <span id="behaviorStudentName">Mushtaq Keyse Mohamed</span>
+                    </div>
+                    <div class="student-detail">
+                        <label>Fasalka:</label>
+                        <span id="behaviorStudentGrade">Grade 7</span>
+                    </div>
+                    <div class="student-detail">
+                        <label>ID No:</label>
+                        <span id="behaviorStudentId">SAH 4714</span>
+                    </div>
+                </div>
+            </div>
+
+            <table class="behavior-table">
+                <thead>
+                    <tr>
+                        <th>Qaladka uu Galay</th>
+                        <th>Wanaaga uu Sameeyay</th>
+                    </tr>
+                </thead>
+                <tbody id="behaviorBody"></tbody>
+            </table>
+
+            <div class="behavior-summary">
+                <div class="behavior-count">
+                    <h3>Inta Jeer Qalad uu Galay</h3>
+                    <div class="count-value bad-count" id="badBehaviorCount">0</div>
+                </div>
+                <div class="behavior-count">
+                    <h3>Inta Jeer Wanaag uu Sameeyay</h3>
+                    <div class="count-value good-count" id="goodBehaviorCount">0</div>
+                </div>
+            </div>
+
+            <div class="loading" id="behaviorLoading">Downloading PDF...</div>
+            <button class="pdf-btn" id="behaviorPdfBtn">⬇ Download PDF</button>
+        </section>
+
+        <!-- ATTENDANCE -->
+        <section class="content-section" id="attendanceSection">
+            <h2 class="section-title">Maqnaashada Ardayga</h2>
+
+            <div class="student-info">
+                <div class="student-details">
+                    <div class="student-detail">
+                        <label>Magaca Ardayga:</label>
+                        <span id="attendanceStudentName">Mushtaq Keyse Mohamed</span>
+                    </div>
+                    <div class="student-detail">
+                        <label>Fasalka:</label>
+                        <span id="attendanceStudentGrade">Grade 7</span>
+                    </div>
+                    <div class="student-detail">
+                        <label>ID No:</label>
+                        <span id="attendanceStudentId">SAH 4714</span>
+                    </div>
+                </div>
+            </div>
+
+            <table class="attendance-table">
+                <thead>
+                    <tr>
+                        <th>Maqnaasho</th>
+                        <th>Joogid</th>
+                        <th>Xaalad Kale</th>
+                    </tr>
+                </thead>
+                <tbody id="attendanceBody"></tbody>
+            </table>
+
+            <div class="loading" id="attendanceLoading">Downloading PDF...</div>
+            <button class="pdf-btn" id="attendancePdfBtn">⬇ Download PDF</button>
+        </section>
+
+    </main>
+
+    <script>
+        const { jsPDF } = window.jspdf;
+
+        /* ================= LOGIN ================= */
+        document.getElementById('loginBtn').addEventListener('click', function() {
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            const loginForm = document.getElementById('loginForm');
+
+            //password  password  password  password  password  password   password  password
+
+            if (password === 'SAH 4714') {
+                document.getElementById('loginSection').style.display = 'none';
+                document.getElementById('navigation').classList.add('show');
+
+                const resultsSection = document.getElementById('resultsSection');
+                resultsSection.style.display = 'block';
+                resultsSection.classList.add('show');
+
+                loadResultsData(1);
+                loadBehaviorData();
+                loadAttendanceData();
+            } else {
+                errorMessage.classList.add('show');
+                loginForm.classList.add('shake');
+                setTimeout(() => loginForm.classList.remove('shake'), 400);
+            }
+        });
+
+        document.getElementById('password').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') document.getElementById('loginBtn').click();
+        });
+
+        /* ================= NAVIGATION ================= */
+        const navItems = document.querySelectorAll('.nav-item');
+        const contentSections = document.querySelectorAll('.content-section');
+
+        navItems.forEach(item => {
+            item.addEventListener('click', function() {
+                navItems.forEach(nav => nav.classList.remove('active'));
+                this.classList.add('active');
+
+                contentSections.forEach(section => {
+                    section.style.display = 'none';
+                    section.classList.remove('show');
+                });
+
+                const target = document.getElementById(this.getAttribute('data-section') + 'Section');
+                target.style.display = 'block';
+                setTimeout(() => target.classList.add('show'), 20);
+            });
+        });
+
+        /* ================= MONTH ================= */
+        const monthButtons = document.querySelectorAll('.month-btn');
+        monthButtons.forEach(button => {
+            button.addEventListener('click', function() {
+                monthButtons.forEach(btn => btn.classList.remove('active'));
+                this.classList.add('active');
+                loadResultsData(this.getAttribute('data-month'));
+            });
+        });
+
+        /* ================= DATA ================= */
+        const resultsData = {
+            1: [
+                { subject: 'Xisaab', grade: 0 },
+                { subject: 'Seynis', grade: 0 },
+                { subject: 'Somali', grade: 0 },
+                { subject: 'C.bulsho', grade: 0 },
+                { subject: 'Carabi', grade: 0 },
+                { subject: 'Tarbiyo', grade: 0 },
+                { subject: 'English', grade: 0 },
+                { subject: 'Teknoloji', grade: 0 },
+                { subject: 'Caafimaad', grade: 0 }
+            ],
+            2: [
+                { subject: 'Xisaab', grade: 0 },
+                { subject: 'Seynis', grade: 0 },
+                { subject: 'Somali', grade: 0 },
+                { subject: 'C.bulsho', grade: 0 },
+                { subject: 'Carabi', grade: 0 },
+                { subject: 'Tarbiyo', grade: 0 },
+                { subject: 'English', grade: 0 },
+                { subject: 'Teknoloji', grade: 0 }
+            ],
+            3: [
+                { subject: 'Xisaab', grade: 0 },
+                { subject: 'Seynis', grade: 0 },
+                { subject: 'Somali', grade: 0 },
+                { subject: 'C.bulsho', grade: 0 },
+                { subject: 'Carabi', grade: 0 },
+                { subject: 'Tarbiyo', grade: 0 },
+                { subject: 'English', grade: 0 },
+                { subject: 'Teknoloji', grade: 0 }
+            ],
+            4: [
+                { subject: 'Xisaab', grade: 0 },
+                { subject: 'Seynis', grade: 0 },
+                { subject: 'Somali', grade: 0 },
+                { subject: 'C.bulsho', grade: 0 },
+                { subject: 'Carabi', grade: 0 },
+                { subject: 'Tarbiyo', grade: 0 },
+                { subject: 'English', grade: 0 },
+                { subject: 'Teknoloji', grade: 0 }
+            ]
+        };
+
+        function loadResultsData(month) {
+            const resultsBody = document.getElementById('resultsBody');
+            resultsBody.innerHTML = '';
+            const data = resultsData[month];
+            let total = 0;
+
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
+                row.style.animation = 'slideInUp 0.4s ease backwards';
+                row.style.animationDelay = `${index * 0.05}s`;
+                row.innerHTML = `<td>${item.subject}</td><td>${item.grade}</td>`;
+                resultsBody.appendChild(row);
+                total += item.grade;
+            });
+
+            const average = total / data.length;
+            document.getElementById('totalScore').textContent = total.toFixed(1);
+            document.getElementById('averageScore').textContent = average.toFixed(2);
+            document.getElementById('gpaScore').textContent = (average / 20).toFixed(2);
+        }
+
+        const behaviorData = {
+            mistakes: ["Maqnaasho xanuun", "Maqnaasho"],
+            goodDeeds: ["Kaalmo la siiyay arday kale"]
+        };
+
+        function loadBehaviorData() {
+            const behaviorBody = document.getElementById('behaviorBody');
+            behaviorBody.innerHTML = '';
+            const maxRows = Math.max(behaviorData.mistakes.length, behaviorData.goodDeeds.length);
+
+            for (let i = 0; i < maxRows; i++) {
+                const row = document.createElement('tr');
+                const mistakeCell = document.createElement('td');
+                mistakeCell.textContent = i < behaviorData.mistakes.length ? behaviorData.mistakes[i] : '';
+                const goodDeedCell = document.createElement('td');
+                goodDeedCell.textContent = i < behaviorData.goodDeeds.length ? behaviorData.goodDeeds[i] : '';
+                row.appendChild(mistakeCell);
+                row.appendChild(goodDeedCell);
+                behaviorBody.appendChild(row);
+            }
+
+            document.getElementById('badBehaviorCount').textContent = behaviorData.mistakes.length;
+            document.getElementById('goodBehaviorCount').textContent = behaviorData.goodDeeds.length;
+        }
+
+        const attendanceData = [
+            { date: '2023-09-01', status: 'maqnasho', notes: 'NADIIF' }
+        ];
+
+        function loadAttendanceData() {
+            const attendanceBody = document.getElementById('attendanceBody');
+            attendanceBody.innerHTML = '';
+            attendanceData.forEach(item => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${item.status === 'maqnasho' ? '✓' : 'Maqan'}</td>
+                    <td>${item.status === 'joogo' ? '✓' : 'Joogo'}</td>
+                    <td>${item.notes}</td>
+                `;
+                attendanceBody.appendChild(row);
+            });
+        }
+
+        /* ================= PDF: RESULTS ================= */
+        function generateResultsPDF() {
+            const loadingElement = document.getElementById('resultsLoading');
+            loadingElement.classList.add('show');
+            const activeMonth = document.querySelector('.month-btn.active').textContent;
+            const doc = new jsPDF();
+
+            doc.setFontSize(20);
+            doc.setTextColor(26, 42, 74);
+            doc.text('Sahal Primary & Secondary School', 105, 15, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(243, 156, 18);
+            doc.text('Natiijada Ardayga', 105, 25, { align: 'center' });
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Magaca Ardayga: ${document.getElementById('studentName').textContent}`, 20, 40);
+            doc.text(`Fasalka: ${document.getElementById('studentGrade').textContent}`, 20, 48);
+            doc.text(`ID No: ${document.getElementById('studentId').textContent}`, 20, 56);
+            doc.text(`Bisha: ${activeMonth}`, 20, 64);
+
+            doc.setFillColor(26, 42, 74);
+            doc.rect(20, 75, 170, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(10);
+            doc.text('Maadooyinka', 25, 81);
+            doc.text('Darajo', 160, 81);
+
+            let yPosition = 90;
+            doc.setTextColor(0, 0, 0);
+            const data = resultsData[document.querySelector('.month-btn.active').getAttribute('data-month')];
+
+            data.forEach(item => {
+                doc.text(item.subject, 25, yPosition);
+                doc.text(item.grade.toString(), 160, yPosition);
+                yPosition += 8;
+            });
+
+            yPosition += 10;
+            doc.setFontSize(12);
+            doc.text(`Total: ${document.getElementById('totalScore').textContent}`, 20, yPosition);
+            doc.text(`Average: ${document.getElementById('averageScore').textContent}`, 80, yPosition);
+            doc.text(`GPA: ${document.getElementById('gpaScore').textContent}`, 140, yPosition);
+
+            yPosition += 15;
+            doc.text(`La soo saaray: ${new Date().toLocaleDateString('so-SO')}`, 20, yPosition);
+
+            doc.save(`Natiijada_${document.getElementById('studentName').textContent}_${activeMonth}.pdf`);
+            loadingElement.classList.remove('show');
+        }
+
+        /* ================= PDF: BEHAVIOR ================= */
+        function generateBehaviorPDF() {
+            const loadingElement = document.getElementById('behaviorLoading');
+            loadingElement.classList.add('show');
+            const doc = new jsPDF();
+
+            doc.setFontSize(20);
+            doc.setTextColor(26, 42, 74);
+            doc.text('Sahal Primary & Secondary School', 105, 15, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(243, 156, 18);
+            doc.text('Aqlaaqda Ardayga', 105, 25, { align: 'center' });
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Magaca Ardayga: ${document.getElementById('behaviorStudentName').textContent}`, 20, 40);
+            doc.text(`Fasalka: ${document.getElementById('behaviorStudentGrade').textContent}`, 20, 48);
+            doc.text(`ID No: ${document.getElementById('behaviorStudentId').textContent}`, 20, 56);
+
+            doc.setFillColor(26, 42, 74);
+            doc.rect(20, 70, 85, 10, 'F');
+            doc.rect(105, 70, 85, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(10);
+            doc.text('Qaladka uu Galay', 25, 76);
+            doc.text('Wanaaga uu Sameeyay', 110, 76);
+
+            let yPosition = 85;
+            doc.setTextColor(0, 0, 0);
+            const maxRows = Math.max(behaviorData.mistakes.length, behaviorData.goodDeeds.length);
+
+            for (let i = 0; i < maxRows; i++) {
+                doc.text(i < behaviorData.mistakes.length ? behaviorData.mistakes[i] : '', 25, yPosition);
+                doc.text(i < behaviorData.goodDeeds.length ? behaviorData.goodDeeds[i] : '', 110, yPosition);
+                yPosition += 8;
+            }
+
+            yPosition += 10;
+            doc.setFontSize(12);
+            doc.text(`Inta Jeer Qalad uu Galay: ${document.getElementById('badBehaviorCount').textContent}`, 20, yPosition);
+            doc.text(`Inta Jeer Wanaag uu Sameeyay: ${document.getElementById('goodBehaviorCount').textContent}`, 110, yPosition);
+
+            yPosition += 15;
+            doc.text(`La soo saaray: ${new Date().toLocaleDateString('so-SO')}`, 20, yPosition);
+
+            doc.save(`Aqlaaqda_${document.getElementById('behaviorStudentName').textContent}.pdf`);
+            loadingElement.classList.remove('show');
+        }
+
+        /* ================= PDF: ATTENDANCE ================= */
+        function generateAttendancePDF() {
+            const loadingElement = document.getElementById('attendanceLoading');
+            loadingElement.classList.add('show');
+            const doc = new jsPDF();
+
+            doc.setFontSize(20);
+            doc.setTextColor(26, 42, 74);
+            doc.text('Sahal Primary & Secondary School', 105, 15, { align: 'center' });
+
+            doc.setFontSize(16);
+            doc.setTextColor(243, 156, 18);
+            doc.text('Maqnaashada Ardayga', 105, 25, { align: 'center' });
+
+            doc.setFontSize(12);
+            doc.setTextColor(0, 0, 0);
+            doc.text(`Magaca Ardayga: ${document.getElementById('attendanceStudentName').textContent}`, 20, 40);
+            doc.text(`Fasalka: ${document.getElementById('attendanceStudentGrade').textContent}`, 20, 48);
+            doc.text(`ID No: ${document.getElementById('attendanceStudentId').textContent}`, 20, 56);
+
+            doc.setFillColor(26, 42, 74);
+            doc.rect(20, 70, 55, 10, 'F');
+            doc.rect(75, 70, 55, 10, 'F');
+            doc.rect(130, 70, 60, 10, 'F');
+            doc.setTextColor(255, 255, 255);
+            doc.setFontSize(10);
+            doc.text('Maqnaasho', 25, 76);
+            doc.text('Joogid', 80, 76);
+            doc.text('Xaalad Kale', 135, 76);
+
+            let yPosition = 85;
+            doc.setTextColor(0, 0, 0);
+            attendanceData.forEach(item => {
+                doc.text(item.status === 'maqnasho' ? '✓' : 'Maqan', 25, yPosition);
+                doc.text(item.status === 'joogo' ? '✓' : 'Joogo', 80, yPosition);
+                doc.text(item.notes, 135, yPosition);
+                yPosition += 8;
+            });
+
+            yPosition += 15;
+            doc.text(`La soo saaray: ${new Date().toLocaleDateString('so-SO')}`, 20, yPosition);
+
+            doc.save(`Maqnaashada_${document.getElementById('attendanceStudentName').textContent}.pdf`);
+            loadingElement.classList.remove('show');
+        }
+
+        document.getElementById('resultsPdfBtn').addEventListener('click', generateResultsPDF);
+        document.getElementById('behaviorPdfBtn').addEventListener('click', generateBehaviorPDF);
+        document.getElementById('attendancePdfBtn').addEventListener('click', generateAttendancePDF);
+    </script>
+</body>
+</html>
